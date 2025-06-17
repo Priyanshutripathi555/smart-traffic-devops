@@ -1,0 +1,12 @@
+groups:
+  - name: TrafficAlerts
+    rules:
+      - alert: HighTraffic
+        expr: traffic_vehicle_count > 70
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High traffic detected"
+          description: "Vehicle count is over 70"
+

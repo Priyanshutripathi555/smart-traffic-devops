@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-api
+  template:
+    metadata:
+      labels:
+        app: traffic-api
+    spec:
+      containers:
+        - name: traffic-container
+          image: priyanshut/traffic-new:latest
+          ports:
+            - containerPort: 5000
+

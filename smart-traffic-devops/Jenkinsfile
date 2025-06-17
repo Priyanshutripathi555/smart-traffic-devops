@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'priyanshut/smart-traffic-app:latest'
+    }
+
+    stages {
+        stage('Clone') {
+            steps {
+                git 'https://github.com/Priyanshu555/smart-traffic-devops.git'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE ./app'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh '''
+                        echo "$PASS" | docker login -u "$USER" --password-stdin
+                        docker push $DOCKER_IMAGE
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh 'kubectl apply -f k8s/service.yaml'
+                sh 'kubectl apply -f k8s/prometheus-deploy.yaml'
+                sh 'kubectl apply -f k8s/prometheus-service.yaml'
+                sh 'kubectl apply -f k8s/grafana-deploy.yaml'
+                sh 'kubectl apply -f k8s/grafana-service.yaml
+            }
+        }
+    }
+}
+

@@ -1,0 +1,53 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Smart Traffic Monitoring Dashboard",
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "10s",
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "Vehicle Count by Location",
+        "targets": [
+          {
+            "expr": "traffic_vehicle_count",
+            "legendFormat": "{{location}}",
+            "refId": "A"
+          }
+        ],
+        "datasource": "Prometheus",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Vehicle Count by Signal",
+        "targets": [
+          {
+            "expr": "traffic_vehicle_count",
+            "legendFormat": "{{signal}}",
+            "refId": "B"
+          }
+        ],
+        "datasource": "Prometheus",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Vehicle Count by Traffic Level",
+        "targets": [
+          {
+            "expr": "traffic_vehicle_count",
+            "legendFormat": "{{traffic_level}}",
+            "refId": "C"
+          }
+        ],
+        "datasource": "Prometheus",
+        "gridPos": { "x": 0, "y": 9, "w": 24, "h": 8 }
+      }
+    ]
+  },
+  "overwrite": true
+}
+
