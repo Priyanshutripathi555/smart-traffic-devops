@@ -1,50 +1,68 @@
 {
   "dashboard": {
     "id": null,
-    "title": "Smart Traffic Monitoring Dashboard",
+    "title": "Smart Traffic Monitoring",
+    "tags": ["traffic", "prometheus", "devops"],
     "timezone": "browser",
-    "schemaVersion": 30,
+    "schemaVersion": 36,
     "version": 1,
-    "refresh": "10s",
+    "refresh": "5s",
     "panels": [
       {
-        "type": "timeseries",
-        "title": "Vehicle Count by Location",
+        "type": "gauge",
+        "title": "Total Vehicle Count",
         "targets": [
           {
-            "expr": "traffic_vehicle_count",
-            "legendFormat": "{{location}}",
+            "expr": "traffic_total_vehicles",
+            "legendFormat": "",
             "refId": "A"
           }
         ],
-        "datasource": "Prometheus",
-        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 6 }
       },
       {
-        "type": "timeseries",
-        "title": "Vehicle Count by Signal",
+        "type": "bar gauge",
+        "title": "Vehicles by Location",
         "targets": [
           {
-            "expr": "traffic_vehicle_count",
-            "legendFormat": "{{signal}}",
+            "expr": "sum by(location) (traffic_vehicle_count)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 6, "y": 0, "w": 6, "h": 6 }
+      },
+      {
+        "type": "bar gauge",
+        "title": "Vehicles by Signal Color",
+        "targets": [
+          {
+            "expr": "sum by(signal) (traffic_vehicle_count)",
             "refId": "B"
           }
         ],
-        "datasource": "Prometheus",
-        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+        "gridPos": { "x": 0, "y": 6, "w": 6, "h": 6 }
       },
       {
-        "type": "timeseries",
-        "title": "Vehicle Count by Traffic Level",
+        "type": "stat",
+        "title": "High Traffic Intersections (Vehicles > 70)",
         "targets": [
           {
-            "expr": "traffic_vehicle_count",
-            "legendFormat": "{{traffic_level}}",
+            "expr": "count(traffic_vehicle_count > 70)",
             "refId": "C"
           }
         ],
-        "datasource": "Prometheus",
-        "gridPos": { "x": 0, "y": 9, "w": 24, "h": 8 }
+        "gridPos": { "x": 6, "y": 6, "w": 6, "h": 6 }
+      },
+      {
+        "type": "state-timeline",
+        "title": "Current Signal Light States",
+        "targets": [
+          {
+            "expr": "traffic_signal_state",
+            "refId": "D"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 12, "w": 12, "h": 6 }
       }
     ]
   },

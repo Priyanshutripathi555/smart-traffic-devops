@@ -36,10 +36,27 @@ def traffic_status():
 @app.route('/metrics')
 def metrics():
     registry = CollectorRegistry()
-    traffic_gauge = Gauge(
+
+    # Metric 1: Vehicle count per location/signal/level
+    vehicle_gauge = Gauge(
         'traffic_vehicle_count',
-        'Vehicle count at traffic signal',
+        'Number of vehicles at a location',
         ['location', 'signal', 'level'],
+        registry=registry
+    )
+
+    # Metric 2: Total vehicle count
+    total_vehicles = Gauge(
+        'traffic_total_vehicles',
+        'Total vehicle count across all signals',
+        registry=registry
+    )
+
+    # Metric 3: Active signal color
+    signal_gauge = Gauge(
+        'traffic_signal_state',
+        'Signal state (1 = active, 0 = inactive)',
+        ['signal'],
         registry=registry
     )
 
@@ -54,11 +71,16 @@ def metrics():
     else:
         level = "Low"
 
-    # Set metric value with custom labels
-    traffic_gauge.labels(location=location, signal=signal, level=level).set(vehicles)
+    # Set metric values
+    vehicle_gauge.labels(location=location, signal=signal, level=level).set(vehicles)
+    total_vehicles.set(vehicles)
+
+    for sig in signals:
+        signal_gauge.labels(signal=sig).set(1 if sig == signal else 0)
 
     return Response(generate_latest(registry), mimetype=CONTENT_TYPE_LATEST)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
 

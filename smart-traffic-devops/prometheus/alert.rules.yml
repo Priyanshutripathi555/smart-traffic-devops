@@ -1,12 +1,21 @@
 groups:
   - name: TrafficAlerts
     rules:
-      - alert: HighTraffic
+      - alert: HighTrafficDetected
         expr: traffic_vehicle_count > 70
         for: 10s
         labels:
           severity: warning
         annotations:
           summary: "High traffic detected"
-          description: "Vehicle count is over 70"
+          description: "Vehicle count over 70 at one or more intersections."
+
+      - alert: AllSignalsInactive
+        expr: sum(traffic_signal_state) == 0
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "All traffic lights appear inactive"
+          description: "Prometheus is not detecting any active traffic signals."
 
