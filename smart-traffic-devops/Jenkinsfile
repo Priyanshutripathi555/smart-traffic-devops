@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'priyanshut/smart-traffic-app:latest'
+        DOCKER_IMAGE = 'priyanshut/traffic-new:latest'
     }
 
     stages {
